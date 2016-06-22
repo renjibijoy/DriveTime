@@ -1,0 +1,3 @@
+<% @output.each do |row| %>
+    <%= CSV.generate_line row, :row_sep => ?\t, :quote_char => ?\ %>
+<% end %>

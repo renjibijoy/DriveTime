@@ -1,0 +1,21 @@
+-#= javascript_include_tag :all
+-#= form_for @main, url: run_path(main: @main), remote: true do |f|
+-#  = label_tag(:api_key, 'API Key: ')
+-#  = f.text_field :api_key, value: @main.api_key
+-#  .row
+-#  = label_tag(:sheet_id, 'Sheet ID: ')
+-#  = f.text_field :sheet_id, value: @main.sheet_id
+-#  .row
+-#  = f.submit 'Run'
+-#.export
+-#  .well{style: 'display:none'}
+-#    .row
+-#      .col-xs-12
+-#        .progress-status.text-primary
+-#    .row
+-#      .col-xs-12
+-#        .progress.progress-striped.active
+-#          .progress-bar
+-#            .text-primary
+-#              0%
+-#  = link_to 'Download CSV', '/system/export.csv', class: 'btn btn-success export-link', style: 'display:none'
