@@ -12,7 +12,7 @@ cd DriveTime
 bundle install
 rake db:create
 rake db:migrate
-( sleep 5; open http://localhost:3000) &
+(sleep 5; open http://localhost:3000) &
 rails s
 cd .
 ```
