@@ -73,7 +73,7 @@ class Main < ActiveRecord::Base
     time = row[@columns.find_index('Departure Time')].downcase
     hour = (time.include?'am') ?  time.split(':')[0].to_i : time.split(':')[0].to_i + 12
     min = (time.include?'am') ? time.split(':')[1].gsub('am','').to_i : time.split(':')[1].gsub('pm','').to_i
-    hash[:departure_time] = DateTime.tomorrow.change({hour: hour, min: min}).strftime('%s')
+    hash[:departure_time] = (DateTime.now+1).change({hour: hour, min: min}).strftime('%s')
     hash[:mode] = row[@columns.find_index('Transit Mode')]
     hash[:traffic_model] = row[@columns.find_index('Traffic Model')] if (!hash[:departure_time].nil? and hash[:mode] == 'driving')
     hash[:units] = 'imperial'
