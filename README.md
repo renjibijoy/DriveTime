@@ -17,4 +17,4 @@ rails s
 cd .
 ```
 
-3) Delete "DriveTime" folder from Desktop and close Terminal when finished using program.
+3) When finished using program, delete "DriveTime" folder from Desktop and close Terminal.
