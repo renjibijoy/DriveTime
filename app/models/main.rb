@@ -40,8 +40,8 @@ class Main < ActiveRecord::Base
     start_index = @columns.find_index('Transit Mode') + 1
     @raw_sheet[0][start_index] = 'Output'
     @raw_sheet[1][start_index] = 'Status'
-    @raw_sheet[1][start_index+1] = 'Duration in Traffic'
-    @raw_sheet[1][start_index+2] = 'Distance'
+    @raw_sheet[1][start_index+1] = 'Duration in Traffic (minutes)'
+    @raw_sheet[1][start_index+2] = 'Distance (miles)'
   end
 
   def insert_response_values(response, row_num)
@@ -51,10 +51,10 @@ class Main < ActiveRecord::Base
       status = results['status']
       start_index = @columns.find_index('Transit Mode') + 1
       if status == 'OK'
-        duration = results['duration_in_traffic']['text']
-        distance = results['distance']['text']
-        @raw_sheet[row_num][start_index+1] = duration
-        @raw_sheet[row_num][start_index+2] = distance
+        duration = results['duration_in_traffic']['value']
+        distance = results['distance']['value']
+        @raw_sheet[row_num][start_index+1] = (duration/60).round(0)
+        @raw_sheet[row_num][start_index+2] = (distance/1609.34).round(1)
       end
       @raw_sheet[row_num][start_index] = status
     else
