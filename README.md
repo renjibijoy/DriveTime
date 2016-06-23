@@ -1,6 +1,6 @@
 # DriveTime
 
-### Running Locally on Mac/Linux
+### Running Locally on Mac
 
 1) Open Terminal
 
