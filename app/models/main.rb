@@ -36,9 +36,10 @@ class Main < ActiveRecord::Base
   def insert_headers
     start_index = @columns.find_index('Transit Mode') + 1
     @raw_sheet[0][start_index] = 'Output'
-    @raw_sheet[1][start_index] = 'Status'
-    @raw_sheet[1][start_index+1] = 'Duration in Traffic (minutes)'
-    @raw_sheet[1][start_index+2] = 'Distance (miles)'
+    @raw_sheet[1][start_index] = 'Duration in Traffic (minutes)'
+    @raw_sheet[1][start_index+1] = 'Distance (miles)'
+    @raw_sheet[1][start_index+2] = 'Status'
+
   end
 
   def insert_response_values(response, row_num)
@@ -51,14 +52,14 @@ class Main < ActiveRecord::Base
       if status == 'OK'
         duration = results['duration_in_traffic']['value']
         distance = results['distance']['value']
-        @raw_sheet[row_num][start_index+1] = (duration/60).round(0)
-        @raw_sheet[row_num][start_index+2] = (distance/1609.34).round(1)
+        @raw_sheet[row_num][start_index] = (duration/60).round(0)
+        @raw_sheet[row_num][start_index+1] = (distance/1609.34).round(1)
       end
-      @raw_sheet[row_num][start_index] = status
+      @raw_sheet[row_num][start_index+2] = status
     elsif body_hash['status'] == 'OVER_QUERY_LIMIT'
       raise 'OVER_QUERY_LIMIT'
     else
-      @raw_sheet[row_num][start_index] = body_hash['status']
+      @raw_sheet[row_num][start_index+2] = body_hash['status']
     end
   end
 
@@ -73,7 +74,7 @@ class Main < ActiveRecord::Base
     time = row[@columns.find_index('Departure Time')].downcase
     hour = (time.include?'am') ?  time.split(':')[0].to_i : time.split(':')[0].to_i + 12
     min = (time.include?'am') ? time.split(':')[1].gsub('am','').to_i : time.split(':')[1].gsub('pm','').to_i
-    hash[:departure_time] = DateTime.tomorrow.change({hour: hour, min: min}).strftime('%s')
+    hash[:departure_time] = (DateTime.now+1).change({hour: hour, min: min}).strftime('%s')
     hash[:mode] = row[@columns.find_index('Transit Mode')]
     hash[:traffic_model] = row[@columns.find_index('Traffic Model')] if (!hash[:departure_time].nil? and hash[:mode] == 'driving')
     hash[:units] = 'imperial'
