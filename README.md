@@ -14,4 +14,7 @@ rake db:create
 rake db:migrate
 ( sleep 5; open http://localhost:3000) &
 rails s
+cd .
 ```
+
+3) Delete "DriveTime" folder from Desktop and close Terminal when finished using program.
