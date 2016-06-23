@@ -6,6 +6,7 @@
 
 2) Paste all of the following code at once:
 ```sh
+cd ~/Desktop/
 git clone https://github.com/renjibijoy/DriveTime.git
 cd DriveTime
 bundle install
