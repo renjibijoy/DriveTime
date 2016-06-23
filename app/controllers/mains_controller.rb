@@ -18,7 +18,7 @@ class MainsController < ApplicationController
       end
     end
   rescue Exception => e
-    flash[:alert] = 'ERROR:' + e.message
+    flash[:alert] = 'ERROR: ' + e.message
     request.format = :html
     headers['Content-Type'] ||= 'text/html'
     response.content_type ||= Mime::HTML

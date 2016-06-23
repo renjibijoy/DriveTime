@@ -46,16 +46,20 @@ class Main < ActiveRecord::Base
 
   def insert_response_values(response, row_num)
     body_hash = JSON.parse(response.body)
-    results = body_hash['rows'][0]['elements'][0]
-    status = results['status']
-    start_index = @columns.find_index('Transit Mode') + 1
-    if status == 'OK'
-      duration = results['duration_in_traffic']['text']
-      distance = results['distance']['text']
-      @raw_sheet[row_num][start_index+1] = duration
-      @raw_sheet[row_num][start_index+2] = distance
+    if body_hash['status'] == 'OK'
+      results = body_hash['rows'][0]['elements'][0]
+      status = results['status']
+      start_index = @columns.find_index('Transit Mode') + 1
+      if status == 'OK'
+        duration = results['duration_in_traffic']['text']
+        distance = results['distance']['text']
+        @raw_sheet[row_num][start_index+1] = duration
+        @raw_sheet[row_num][start_index+2] = distance
+      end
+      @raw_sheet[row_num][start_index] = status
+    else
+      raise body_hash['status']
     end
-    @raw_sheet[row_num][start_index] = status
   end
 
   def prepare_maps_hash(row)
