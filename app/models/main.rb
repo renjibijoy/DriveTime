@@ -114,7 +114,8 @@ class Main < ActiveRecord::Base
 
   def make_maps_request(hash)
     url = create_url(hash)
-    uri = URI.parse(url)
+    encoded_url = URI.encode(url)
+    uri = URI.parse(encoded_url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
