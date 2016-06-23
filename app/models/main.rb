@@ -1,14 +1,11 @@
 class Main < ActiveRecord::Base
   attr_accessor :format, :columns, :raw_sheet
 
-  def initialize
+  def run(file)
     @format = {}
     @columns = []
     @rows = []
     @raw_sheet = []
-  end
-
-  def run(file)
     process_sheet(file)
   end
 
@@ -46,10 +43,11 @@ class Main < ActiveRecord::Base
 
   def insert_response_values(response, row_num)
     body_hash = JSON.parse(response.body)
+    # Main.create(sheet_id: body_hash.to_s)
+    start_index = @columns.find_index('Transit Mode') + 1
     if body_hash['status'] == 'OK'
       results = body_hash['rows'][0]['elements'][0]
       status = results['status']
-      start_index = @columns.find_index('Transit Mode') + 1
       if status == 'OK'
         duration = results['duration_in_traffic']['value']
         distance = results['distance']['value']
@@ -57,8 +55,10 @@ class Main < ActiveRecord::Base
         @raw_sheet[row_num][start_index+2] = (distance/1609.34).round(1)
       end
       @raw_sheet[row_num][start_index] = status
+    elsif body_hash['status'] == 'OVER_QUERY_LIMIT'
+      raise 'OVER_QUERY_LIMIT'
     else
-      raise body_hash['status']
+      @raw_sheet[row_num][start_index] = body_hash['status']
     end
   end
 
