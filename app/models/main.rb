@@ -71,15 +71,27 @@ class Main < ActiveRecord::Base
   end
 
   def add_inputs(hash, row)
-    time = row[@columns.find_index('Departure Time')].downcase
-    hour = (time.include?'am') ?  time.split(':')[0].to_i : time.split(':')[0].to_i + 12
-    min = (time.include?'am') ? time.split(':')[1].gsub('am','').to_i : time.split(':')[1].gsub('pm','').to_i
-    hash[:departure_time] = (DateTime.now+1).change({hour: hour, min: min}).strftime('%s')
+    hash = set_departure_time(hash, row)
     hash[:mode] = row[@columns.find_index('Transit Mode')]
     hash[:traffic_model] = row[@columns.find_index('Traffic Model')] if (!hash[:departure_time].nil? and hash[:mode] == 'driving')
     hash[:units] = 'imperial'
     hash
   end
+
+  def set_departure_time(hash, row)
+    time = row[@columns.find_index('Departure Time')].downcase
+    hour = (time.include? 'am') ? time.split(':')[0].to_i : time.split(':')[0].to_i + 12
+    min = (time.include? 'am') ? time.split(':')[1].gsub('am', '').to_i : time.split(':')[1].gsub('pm', '').to_i
+    days_of_week = %w[sunday monday tuesday wednesday thursday friday saturday]
+    day = days_of_week.find_index(row[@columns.find_index('Departure Day')].downcase)
+    raise 'Invalid "Departure Day" input' if day.nil?
+    today = DateTime.now
+    next_desired_day = (((day-today.wday) % 7)==0) ? today + 7 : today + ((day-today.wday) % 7)
+    epoch_datetime = next_desired_day.change({hour: hour, min: min}).strftime('%s')
+    hash[:departure_time] = epoch_datetime
+    hash
+  end
+
 
   def add_api_key(hash, row)
     hash[:key] = row[@columns.find_index('API Key')]
